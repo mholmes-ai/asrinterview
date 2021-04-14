@@ -1,0 +1,25 @@
+---
+#####################################
+# remove apachephp docker container
+#####################################
+- name: Stop and remove apachephp container
+  hosts: apache
+  become: true
+  vars_files:
+    - defaults/main.yml
+
+  tasks:
+   - name: Stop apachephp container
+     docker_container:
+        name: "{{ php_container_name }}"
+        state: stopped
+
+   - name: Remove apachephp container
+     docker_container:
+        name: "{{ php_container_name }}"
+        state: absent
+
+   - name: Remove php docker image
+     docker_image:
+        name: "{{ php_container_image }}"
+        state: absent

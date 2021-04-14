@@ -1,0 +1,76 @@
+---
+##############################
+##Install Docker repo
+##############################
+- name: Install Docker on selected hosts
+  hosts: apache
+  become: true
+  vars_files:
+    - defaults/main.yml
+
+  tasks:
+   - name: Check for old versions of docker and uninstall
+     package:
+       name:
+         - docker
+         - docker-client
+         - docker-client-latest
+         - docker-common
+         - docker-latest
+         - docker-latest-logrotate
+         - docker-logrotate
+         - docker-engine
+       state: absent
+
+   - name: add Docker GPG key
+     rpm_key:
+       key: "{{ docker_gpgkey }}"
+       state: present
+
+   - name: Add Docker repo to the system
+     get_url:
+       url: "{{ docker_baseurl }}"
+       dest: /etc/yum.repos.d/docker.repo
+       owner: root
+       group: root
+       mode: 0644
+
+   - name: Remove podman from RedHat
+     package: 
+       name: podman
+       state: absent 
+
+   - name: Remove buildah from RedHat
+     package: 
+       name: buildah
+       state: absent
+
+   - name: Install latest version of Docker Engine
+     package: 
+       name: docker-ce
+       state: present
+
+   - name: Install latest version of Docker Engine cli
+     package: 
+       name: docker-ce-cli
+       state: present
+
+   - name: Install latest version of container-selinux
+     package: 
+       name: container-selinux
+       state: present         
+
+   - name: Install latest version of containerd
+     package: 
+       name: containerd.io
+       state: present
+
+   - name: Install latest version of docker pip
+     pip: 
+       name: docker     
+
+   - name: Start Docker
+     service:
+       name: docker
+       state: started
+       enabled: true

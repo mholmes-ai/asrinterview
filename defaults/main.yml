@@ -1,0 +1,61 @@
+---
+#MariaDB Repo Variables
+baseurl: #http://mirrors.coreix.net/mariadb/yum/10.5/rhel8-amd64
+gpgkey: #http://mirrors.coreix.net/mariadb/yum/RPM-GPG-KEY-MariaDB
+
+#MariaDB settings
+repo_file: "/etc/ansible/asrinterview/files/mariadb.repo"
+mariadb_root_password: "rootpassword"
+
+#MariaDB /etc/my.cnf.d/mysql-clients.cnf cnf file
+mycnf_file_name: /etc/ansible/asrinterview/files/mysql-clients.cnf
+mycnf_file_location: /etc/my.cnf.d/mysql-clients.cnf
+
+#MariaDB new user
+mariadb_new_user: "user"
+mariadb_new_user_password: "password"
+
+#MariaDB ip subnet
+mariadb_ip_subnet: "192.168.100.%"
+
+#MariaDB host list
+mariadb_host_list:
+  - "127.0.0.1"
+  - "localhost"
+  - "192.168.100.%"
+
+#MariaDB specified port
+mariadb_specified_port: "3306/tcp"
+
+#MariaDB new database
+mariadb_new_database: "website"
+mariadb_new_database_permissions: "*.*:ALL,GRANT" #Assigns new user all permissions for new DB, check for more info  https://docs.ansible.com/ansible/latest/collections/community/mysql/mysql_user_module.html
+
+#MariaDB websitedb dump
+website_dump_source: /etc/ansible/asrinterview/files/
+website_dump_name: websitedump.sql
+website_dump_location: /tmp/
+
+#Docker repo variables
+docker_baseurl: https://download.docker.com/linux/centos/docker-ce.repo
+docker_gpgkey: https://download.docker.com/linux/centos/gpg
+docker_repo_file: /etc/ansible/apache/files/docker.repo
+
+#php docker container variables
+php_container_name: "apachephp"
+php_container_image: "php:apache"
+php_container_command: #docker-php-ext-install mysqli pdo pdo_mysql && docker-php-ext-enable pdo_mysql
+php_container_exposed_ports: 80
+php_container_published_ports: 0.0.0.0:8080:80
+php_container_volumes: /var/www/html:/var/www/html/
+
+#localhost container rich rule
+localhost_container_rich_rule: 'rule family=ipv4 source address=172.27.0.0/16 accept'
+
+#php file locations
+php_file_location: "/etc/ansible/asrinterview/files/"
+php_directory_location: /var/www/html/
+php_files:
+  - "info.php"
+  - "index.html"
+  - "test_list.php"

@@ -1,0 +1,50 @@
+---
+#####################################
+# Run apachephp in docker container
+#####################################
+- name: Pull and run apache image
+  hosts: apache
+  become: true
+  vars_files:
+    - defaults/main.yml
+
+  tasks:
+   - name: Check php directory exists on hosts
+     file:
+        path: "{{ php_directory_location }}"
+        state: directory
+        mode: 0755
+
+   - name: Place php file
+     copy:
+       src: "{{ php_file_location }}"
+       dest: "{{ php_directory_location }}"
+       mode: 0755
+     loop:  "{{ php_files }}"
+
+   - name: Pull php image from docker
+     docker_image:
+        name: "{{ php_container_image }}"
+        source: pull
+
+   - name: Create and start apachephp container
+     docker_container:
+        name: "{{ php_container_name }}"
+        image: "{{ php_container_image }}"
+        command: "{{ php_container_command }}"
+        volumes: "{{ php_container_volumes }}"
+        exposed_ports: "{{ php_container_exposed_ports }}"
+        published_ports: "{{ php_container_published_ports }}"
+        state: started
+
+   - name: Allow localhost connection to containers
+     firewalld:
+        rich_rule: "{{ localhost_container_rich_rule }}"
+        permanent: true
+        zone: public
+        state: enabled
+
+   - name: Reload firewalld 
+     systemd:
+        name: firewalld
+        state: reloaded
