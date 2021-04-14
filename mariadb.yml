@@ -20,11 +20,11 @@
          - MariaDB-server
          - python3-PyMySQL
 
-   - name: Place mycnf file
-     copy:
-       src: "{{ mycnf_file_name }}"
-       dest: "{{ mycnf_file_location }}"
-       mode: 0644
+   #- name: Place mycnf file
+     #copy:
+       #src: "{{ mycnf_file_name }}"
+       #dest: "{{ mycnf_file_location }}"
+       #mode: 0644
 
    - name: Allow remote connections over specified port for MariaDB
      firewalld:
@@ -89,10 +89,10 @@
        src: "{{ website_dump_source }}{{ website_dump_name }}"
        dest: "{{ website_dump_location }}"
 
-   #- name: Populates database for remote website access
-     #mysql_db:
-       #name: "{{ mariadb_new_database }}"
-       #state: import
-       #target: "{{ website_dump_location }}{{ website_dump_name }}"
-       #login_user: root
-       #login_password: "{{ mariadb_root_password }}"
+   - name: Populates database for remote website access
+     mysql_db:
+       name: "{{ mariadb_new_database }}"
+       state: import
+       target: "{{ website_dump_location }}{{ website_dump_name }}"
+       login_user: root
+       login_password: "{{ mariadb_root_password }}"

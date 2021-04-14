@@ -5,9 +5,9 @@
 
 [mysql]
    ...
-   skip-networking=0
+  #skip-networking=0
    ...
-   skip-bind-address
+  #skip-bind-address
    ...
 [mysql_upgrade]
 
